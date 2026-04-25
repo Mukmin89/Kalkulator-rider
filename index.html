@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator Harga Rider Ikan</title>
+
+<style>
+body{
+  font-family: Arial, sans-serif;
+  background:#eef7f6;
+  margin:0;
+  padding:20px;
+}
+.app{
+  max-width:430px;
+  margin:auto;
+  background:white;
+  padding:20px;
+  border-radius:18px;
+  box-shadow:0 4px 15px rgba(0,0,0,0.12);
+}
+h2{
+  text-align:center;
+  color:#08756f;
+  margin-bottom:5px;
+}
+p{
+  text-align:center;
+  color:#666;
+  font-size:14px;
+}
+label{
+  font-weight:bold;
+  display:block;
+  margin-top:15px;
+}
+input{
+  width:100%;
+  padding:13px;
+  font-size:18px;
+  margin-top:6px;
+  border:1px solid #ccc;
+  border-radius:10px;
+  box-sizing:border-box;
+}
+button{
+  width:100%;
+  padding:14px;
+  margin-top:14px;
+  border:none;
+  border-radius:10px;
+  font-size:17px;
+  font-weight:bold;
+}
+.kira{
+  background:#08756f;
+  color:white;
+}
+.reset{
+  background:#ddd;
+}
+.copy{
+  background:#ffb703;
+}
+.result{
+  margin-top:20px;
+  padding:18px;
+  background:#e8fff9;
+  border-radius:14px;
+  text-align:center;
+  border:2px dashed #08756f;
+}
+.total{
+  font-size:32px;
+  color:#08756f;
+  font-weight:bold;
+}
+.small{
+  font-size:13px;
+  color:#555;
+  margin-top:8px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+  <h2>Kalkulator Rider Ikan</h2>
+  <p>Isi jarak dari Google Maps, sistem kira harga penghantaran.</p>
+
+  <label>Jarak Penghantaran (KM)</label>
+  <input type="number" id="jarak" placeholder="Contoh: 12">
+
+  <label>Caj Asas (RM)</label>
+  <input type="number" id="cajAsas" value="5">
+
+  <label>Harga Per KM (RM)</label>
+  <input type="number" id="hargaKm" value="1.50" step="0.10">
+
+  <label>Caj Tambahan / Handling Ikan (RM)</label>
+  <input type="number" id="handling" value="0">
+
+  <button class="kira" onclick="kiraHarga()">Kira Harga</button>
+  <button class="copy" onclick="salinAyat()">Salin Ayat WhatsApp</button>
+  <button class="reset" onclick="resetForm()">Reset</button>
+
+  <div class="result">
+    <div>Jumlah Caj Rider</div>
+    <div class="total" id="jumlah">RM0.00</div>
+    <div class="small" id="detail">Masukkan jarak dahulu.</div>
+  </div>
+</div>
+
+<script>
+let hargaAkhir = 0;
+let ayatWhatsapp = "";
+
+function kiraHarga(){
+  let jarak = parseFloat(document.getElementById("jarak").value);
+  let cajAsas = parseFloat(document.getElementById("cajAsas").value);
+  let hargaKm = parseFloat(document.getElementById("hargaKm").value);
+  let handling = parseFloat(document.getElementById("handling").value);
+
+  if(isNaN(jarak) || jarak <= 0){
+    alert("Sila masukkan jarak KM yang betul.");
+    return;
+  }
+
+  if(isNaN(cajAsas)){ cajAsas = 0; }
+  if(isNaN(hargaKm)){ hargaKm = 0; }
+  if(isNaN(handling)){ handling = 0; }
+
+  hargaAkhir = cajAsas + (jarak * hargaKm) + handling;
+
+  document.getElementById("jumlah").innerHTML = "RM" + hargaAkhir.toFixed(2);
+
+  document.getElementById("detail").innerHTML =
+    "Jarak: " + jarak + " KM<br>" +
+    "Caj asas: RM" + cajAsas.toFixed(2) + "<br>" +
+    "Harga KM: RM" + hargaKm.toFixed(2) + " / KM<br>" +
+    "Handling: RM" + handling.toFixed(2);
+
+  ayatWhatsapp =
+    "Caj penghantaran ikan segar adalah RM" + hargaAkhir.toFixed(2) +
+    " untuk jarak " + jarak + " KM. Terima kasih.";
+}
+
+function salinAyat(){
+  if(hargaAkhir <= 0){
+    alert("Sila kira harga dahulu.");
+    return;
+  }
+
+  navigator.clipboard.writeText(ayatWhatsapp).then(function(){
+    alert("Ayat WhatsApp berjaya disalin.");
+  }, function(){
+    alert(ayatWhatsapp);
+  });
+}
+
+function resetForm(){
+  document.getElementById("jarak").value = "";
+  document.getElementById("cajAsas").value = 5;
+  document.getElementById("hargaKm").value = 1.50;
+  document.getElementById("handling").value = 0;
+  document.getElementById("jumlah").innerHTML = "RM0.00";
+  document.getElementById("detail").innerHTML = "Masukkan jarak dahulu.";
+  hargaAkhir = 0;
+  ayatWhatsapp = "";
+}
+</script>
+
+</body>
+</html>
